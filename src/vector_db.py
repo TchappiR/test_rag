@@ -81,4 +81,30 @@ class VectorDB:
             show_progress_bar=True
         )
         # ChromaDB veut des listes Python, pas des tableaux numpy -> .tolist()
-        return vecteurs.tolist()   
+        return vecteurs.tolist()
+
+    # ==================================================================
+    #  ÉTAPE 3.3 — RECHERCHER les n chunks les plus proches
+    # ==================================================================
+    def retrieve(self, question, n=3):
+        vecteur_question = self._encode([question])
+        resultats = self.collection.query(
+            query_embeddings=vecteur_question,
+            n_results=n,
+        )
+        ids        = resultats["ids"][0]
+        documents  = resultats["documents"][0]
+        metadatas  = resultats["metadatas"][0]
+        distances  = resultats["distances"][0]
+       
+        chunks_trouves = []
+        for i in range(len(ids)):
+            chunks_trouves.append({
+                "id": ids[i],
+                "text": documents[i],
+                "source": metadatas[i]["source"],
+                "categorie": metadatas[i]["categorie"],
+                "distance": distances[i],
+            })
+        return chunks_trouves
+    
