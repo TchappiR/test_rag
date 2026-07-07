@@ -59,4 +59,13 @@ class VectorDB:
             metadatas=metadatas,
         )
 
+    # ==================================================================
+    #  ÉTAPE 3.2 — RECHARGER la base (aucun encodage de corpus ici !)
+    # ==================================================================
+    def _recharger(self):
+        """Rouvre une collection existante et recharge le BON modèle."""
+        self.collection = self.client.get_collection(self.collection_name)
+        self.model_name = self.collection.metadata["embedding_model"]
+        self.model = SentenceTransformer(self.model_name)
+
     
