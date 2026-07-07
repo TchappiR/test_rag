@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from groq import Groq
 
 load_dotenv()
 
@@ -16,13 +15,15 @@ LLM_MODEL = "openai/gpt-oss-120b"
 
 MODERATION_MODEL = "openai/gpt-oss-safeguard-20b"
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+PROMPTS_DIR = BASE_DIR / "prompts"
 
 # Dossier où ChromaDB écrira ses fichiers persistés
-CHROMA_PATH = str(BASE_DIR / "chroma_db")
+CHROMA_PATH = str(DATA_DIR / "chroma_db")
 
 # Nom logique de la collection à l'intérieur de ChromaDB.
 COLLECTION_NAME = "corpus_villebrume"
 
 # Fichier CSV contenant le corpus
-CORPUS_CSV = str(BASE_DIR / "05_corpus_rag.csv")
+CORPUS_CSV = str(DATA_DIR / "05_corpus_rag.csv")
