@@ -68,4 +68,17 @@ class VectorDB:
         self.model_name = self.collection.metadata["embedding_model"]
         self.model = SentenceTransformer(self.model_name)
 
-    
+    # ==================================================================
+    #  Méthode d'encodage — utilisée à la création ET à la recherche
+    # ==================================================================
+    def _encode(self, textes):
+
+        vecteurs = self.model.encode(
+            textes,
+            batch_size=32,              
+            normalize_embeddings=True,  
+                                        
+            show_progress_bar=True
+        )
+        # ChromaDB veut des listes Python, pas des tableaux numpy -> .tolist()
+        return vecteurs.tolist()   
