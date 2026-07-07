@@ -28,4 +28,35 @@ class VectorDB:
                 f"Passez l'argument 'chunks=' pour construire la base."
             )
 
+    # ==================================================================
+    #  ÉTAPE 3.1 — CRÉER la base
+    # ==================================================================
+    def _creer(self, chunks):
+        """Encode tous les chunks et les insère dans une collection neuve."""
+        self.model_name = config.EMBEDDING_MODEL
+        self.model = SentenceTransformer(self.model_name)
+        self.collection = self.client.create_collection(
+            name=self.collection_name,
+            metadata={
+                "hnsw:space": "cosine",
+                "embedding_model": self.model_name,
+            },
+        )
+
+        ids = [c["id"] for c in chunks]
+        documents = [c["text"] for c in chunks]
+        metadatas = [
+            {"source": c["source"], "categorie": c["categorie"]}
+            for c in chunks
+        ]
+
+        embeddings = self._encode(documents)
+
+        self.collection.add(
+            ids=ids,
+            documents=documents,
+            embeddings=embeddings,
+            metadatas=metadatas,
+        )
+
     
